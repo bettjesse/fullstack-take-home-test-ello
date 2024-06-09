@@ -1,11 +1,15 @@
 
 import { useState, useRef, useEffect } from 'react';
-import { TextField, Box, Typography, Grid, Container, IconButton, Card, CardActionArea, CardContent, Skeleton, Badge, AppBar, Toolbar } from '@mui/material';
+import { TextField, Box, Typography, Grid, Container, IconButton, Card, CardActionArea, CardContent, Skeleton, Badge, AppBar, Toolbar, Drawer, List, ListItem, ListItemText } from '@mui/material';
 import { AddCircleOutline, MenuBook } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../hooks/useAppDispatch';
-import { addBook } from './slices/readingList';
+import { addBook, removeBook } from './slices/readingList';
 import { CssBaseline, GlobalStyles } from '@mui/material';
 import { gql, useQuery } from '@apollo/client';
+import { Close as CloseIcon } from '@mui/icons-material';
+import { RemoveCircleOutline as RemoveCircleOutlineIcon } from '@mui/icons-material';
+
+
 
 // Define the Books query
 const BOOKS_QUERY = gql`
@@ -39,7 +43,9 @@ const Books = () => {
   const [randomBooks, setRandomBooks] = useState<Book[]>([]);
   const dispatch = useAppDispatch();
   const readingListCount = useAppSelector(state => state.readingList.books.length);
+  const readingList = useAppSelector(state => state.readingList.books);
   const searchRef = useRef<HTMLDivElement>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -72,6 +78,10 @@ const Books = () => {
     dispatch(addBook(book));
   };
 
+  const handleRemoveFromReadingList = (book: string)=>  {
+    dispatch(removeBook(book))
+  }
+
   if (error) return <p>Error :(</p>;
 
   return (
@@ -80,16 +90,45 @@ const Books = () => {
       <GlobalStyles styles={{ body: { backgroundColor: '#FFFFF' } }} />
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" sx={{ flexGrow: 1, color:"#FABD33" }}>
             Books List
           </Typography>
-          <IconButton color="inherit">
+          <IconButton color="inherit" onClick={() => setDrawerOpen(true)}>
             <Badge badgeContent={readingListCount} color="secondary">
               <MenuBook />
             </Badge>
           </IconButton>
         </Toolbar>
       </AppBar>
+      <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+  <List>
+    <ListItem>
+      <Typography variant="h6" sx={{ color: '#5ACCCC' }}>Student Reading List</Typography>
+    </ListItem>
+    <ListItem>
+      <IconButton onClick={() => setDrawerOpen(false)}>
+        <CloseIcon />
+      </IconButton>
+    </ListItem>
+    {readingList.map((book, index) => (
+      <ListItem key={index}>
+        <ListItemText 
+          primary={
+            <Typography variant="subtitle1" sx={{ color: '#FACCC', marginRight: '10px' }}>{index + 1}. {book.title}</Typography>
+          } 
+          secondary={
+            <Typography variant="caption" sx={{ color: '#28B8B8' }}>Author: <span style={{ color: '#53C2C2' }}>{book.author}</span></Typography>
+          } 
+        />
+        <IconButton onClick={() => handleRemoveFromReadingList(book.title)} size="small">
+          <RemoveCircleOutlineIcon sx={{ color: '#FABD33' }} />
+        </IconButton>
+      </ListItem>
+    ))}
+  </List>
+</Drawer>
+
+
       <Container sx={{ textAlign: 'center', marginTop: '50px', width: '80%', margin: 'auto', fontFamily: 'Mulish, sans-serif' }}>
         <Box sx={{ marginBottom: '20px', position: 'relative', display: 'inline-block' }}>
           <TextField
@@ -190,22 +229,23 @@ const SkeletonCard = () => (
 
 // BookCard component for displaying books
 const BookCard = ({ book, handleAddToReadingList }: { book: Book, handleAddToReadingList: (book: Book) => void }) => (
-  <Card sx={{ maxWidth: 220, margin: '10px auto', backgroundColor: '#CFFAFA' }}>
-    <CardActionArea>
-      <img src={book.coverPhotoURL} alt={book.title} style={{ width: '100%' }} />
-      <CardContent>
-        <Typography gutterBottom variant="subtitle1" component="h2" sx={{ color: '#335C6E' }}>
-          {book.title}
-        </Typography>
-        <Typography variant="caption" color="textSecondary" component="p" sx={{ color: '#4AA088' }}>
-          Author: {book.author}
-        </Typography>
-        <IconButton onClick={() => handleAddToReadingList(book)} size="small" sx={{ marginLeft: 'auto', color: '#FABD33' }}>
-          <AddCircleOutline />
-        </IconButton>
-      </CardContent>
-    </CardActionArea>
-  </Card>
+  <Card sx={{ maxWidth: 220, margin: '10px auto', backgroundColor: '#CFFAFA', display: 'flex', flexDirection: 'column' }}>
+  <CardActionArea style={{ flexGrow: 1 }}>
+    <img src={book.coverPhotoURL} alt={book.title} style={{ width: '100%' }} />
+    <CardContent style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+      <Typography gutterBottom variant="subtitle1" component="h2" sx={{ color: '#335C6E', flex: '1' }}>
+        {book.title}
+      </Typography>
+      <Typography variant="caption" color="textSecondary" component="p" sx={{ color: '#4AA088' }}>
+        Author: {book.author}
+      </Typography>
+    </CardContent>
+  </CardActionArea>
+  <IconButton onClick={() => handleAddToReadingList(book)} size="small" sx={{ marginLeft: 'auto', color: '#FABD33' }}>
+    <AddCircleOutline />
+  </IconButton>
+</Card>
+
 );
 
 export default Books;
