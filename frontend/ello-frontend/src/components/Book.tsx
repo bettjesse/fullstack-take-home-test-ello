@@ -1,7 +1,12 @@
+
+
+
 import { gql, useQuery } from '@apollo/client';
-import { useState, useEffect } from 'react';
-import { TextField, Grid, Box, Card, CardActionArea, CardContent, Typography, CardActions, Button, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { useState, useRef, useEffect } from 'react';
+import { TextField, Box, Typography, Grid, Container, IconButton, Card, CardActionArea, CardContent, Skeleton } from '@mui/material';
+import { AddCircleOutline } from '@mui/icons-material';
+import { useAppDispatch } from '../hooks/useAppDispatch';
+import { addBook } from './slices/readingList';
 
 // Define the Books query
 const BOOKS_QUERY = gql`
@@ -15,7 +20,6 @@ const BOOKS_QUERY = gql`
   }
 `;
 
-// Define the Book interface
 interface Book {
   author: string;
   coverPhotoURL: string;
@@ -23,120 +27,180 @@ interface Book {
   title: string;
 }
 
-// Main component
+// Utility function to get random books
+const getRandomBooks = (books: Book[], num: number): Book[] => {
+  const shuffled = [...books].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, num);
+};
+
 const Books = () => {
   const { loading, error, data } = useQuery<{ books: Book[] }>(BOOKS_QUERY);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredBooks, setFilteredBooks] = useState<Book[]>([]);
-  const [readingList, setReadingList] = useState<Book[]>([]);
   const [randomBooks, setRandomBooks] = useState<Book[]>([]);
+  const dispatch = useAppDispatch();
+  const searchRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setSearchTerm('');
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     if (data) {
-      // Select a random subset of 9 books from the fetched data
-      const randomIndexes = Array.from({ length: 9 }, () => Math.floor(Math.random() * data.books.length));
-      const randomSubset = randomIndexes.map(index => data.books[index]);
-      setRandomBooks(randomSubset);
+      setRandomBooks(getRandomBooks(data.books, 9));
     }
   }, [data]);
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
     if (data) {
-      setFilteredBooks(
-        data.books.filter(book =>
-          book.title.toLowerCase().includes(term.toLowerCase())
-        )
-      );
+      const filtered = data.books.filter(book => book.title.toLowerCase().includes(term.toLowerCase()));
+      setFilteredBooks(filtered);
     }
   };
 
-  const addToReadingList = (book: Book) => {
-    setReadingList(prevList => [...prevList, book]);
+  const handleAddToReadingList = (book: Book) => {
+    dispatch(addBook(book));
   };
 
-  const removeFromReadingList = (book: Book) => {
-    setReadingList(prevList => prevList.filter(item => item.title !== book.title));
-  };
-
-  if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
 
   return (
-    <div>
-      <h2>Books List</h2>
+    <Container sx={{ textAlign: 'center', marginTop: '50px', width: '80%', margin: 'auto', fontFamily: 'Mulish, sans-serif', backgroundColor: '#FFFFFF' }}>
+      <h2 style={{ color: '#335C6E' }}>Books List</h2>
+
+    
+      <Box sx={{ marginBottom: '20px' }}>
       <TextField
-        label="Search Books"
-        variant="outlined"
-        fullWidth
-        margin="normal"
-        value={searchTerm}
-        onChange={e => handleSearch(e.target.value)}
-      />
-      {searchTerm ? (
-        <Box maxHeight={400} overflow="auto">
-          {filteredBooks.map((book, index) => (
-            <BookCard key={index} book={book} onAdd={addToReadingList} />
-          ))}
-        </Box>
-      ) : (
-        <Grid container spacing={2}>
-          {randomBooks.map((book, index) => (
-            <Grid item key={index} xs={4}>
-              <BookCard book={book} onAdd={addToReadingList} />
+  label="Search Books"
+  variant="outlined"
+  margin="normal"
+  value={searchTerm}
+  onChange={e => handleSearch(e.target.value)}
+  sx={{ 
+    width: { xs: '100%', sm: '320px' },
+    borderRadius: '6px' // Adjust the value for smoother corners
+  }}
+/>
+
+
+
+        {searchTerm && (
+          <Box
+            ref={searchRef}
+            sx={{
+              maxHeight: '300px',
+              width: { xs: '100%', sm: '320px' },
+              overflowY: 'auto',
+              zIndex: 1,
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              textAlign: 'left',
+              margin: '0 auto',
+              position: 'relative',
+              marginTop: '10px',
+              backgroundColor: '#CFFAFA'
+            }}
+          >
+            {loading ? (
+              // Display skeletons while loading
+              Array.from(new Array(3)).map((_, index) => (
+                <Box key={index} sx={{ marginBottom: '10px', display: 'flex', alignItems: 'center', padding: '10px' }}>
+                  <Skeleton variant="rectangular" width={80} height={80} animation="pulse" style={{ marginRight: '10px' }} />
+                  <div>
+                    <Typography variant="subtitle1"><Skeleton variant="text" animation="pulse" /></Typography>
+                    <Typography variant="caption"><Skeleton variant="text" animation="pulse" /></Typography>
+                  </div>
+                  <IconButton size="small" sx={{ marginLeft: 'auto' }}>
+                    <AddCircleOutline />
+                  </IconButton>
+                </Box>
+              ))
+            ) : (
+              filteredBooks.map((book, index) => (
+                <Box key={index} sx={{ marginBottom: '10px', display: 'flex', alignItems: 'center', padding: '10px' }}>
+                  <img src={book.coverPhotoURL} alt={book.title} width={80} height={80} style={{ marginRight: '10px' }} />
+                  <div>
+                    <Typography variant="subtitle1">{book.title}</Typography>
+                    <Typography variant="caption">Author: {book.author}</Typography>
+                  </div>
+                  <IconButton size="small" sx={{ marginLeft: 'auto', color:'#FABD33' }} onClick={() => handleAddToReadingList(book)}>
+                    <AddCircleOutline />
+                  </IconButton>
+                </Box>
+              ))
+            )}
+          </Box>
+        )}
+      </Box>
+      <Grid container spacing={1} justifyContent="center">
+        {loading ? (
+          Array.from(new Array(9)).map((_, index) => (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <SkeletonCard />
             </Grid>
-          ))}
-        </Grid>
-      )}
-      <h2>Reading List</h2>
-      <List>
-        {readingList.map((book, index) => (
-          <ListItem key={index} alignItems="flex-start">
-            <ListItemText
-              primary={book.title}
-              secondary={
-                <>
-                  <Typography component="span" variant="body2" color="textPrimary">
-                    {book.author}
-                  </Typography>
-                  {" — " + book.readingLevel}
-                </>
-              }
-            />
-            <ListItemSecondaryAction>
-              <IconButton edge="end" aria-label="delete" onClick={() => removeFromReadingList(book)}>
-                <DeleteIcon />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>
-        ))}
-      </List>
-    </div>
+          ))
+        ) : (
+          randomBooks.map((book, index) => (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <BookCard book={book} handleAddToReadingList={handleAddToReadingList} />
+            </Grid>
+          ))
+        )}
+      </Grid>
+    </Container>
   );
 };
 
-// BookCard component
-const BookCard = ({ book, onAdd }: { book: Book; onAdd: (book: Book) => void; }) => (
-  <Card style={{ maxWidth: 200 }}>
+// SkeletonCard component for displaying skeletons
+const SkeletonCard = () => (
+  <Card sx={{ maxWidth: 220, margin: '10px auto'}}>
     <CardActionArea>
+      <Skeleton variant="rectangular" width={220} height={320} animation="pulse" />
       <CardContent>
-        <Typography gutterBottom variant="h5" component="h2">
-          {book.title}
+        <Typography gutterBottom variant="subtitle1" component="h2">
+          <Skeleton variant="text" animation="pulse" />
         </Typography>
-        <Typography variant="body2" color="textSecondary" component="p">
-          Author: {book.author}
+        <Typography variant="caption" color="textSecondary" component="p">
+          <Skeleton variant="text" animation="pulse" />
         </Typography>
-        <Typography variant="body2" color="textSecondary" component="p">
-          Reading Level: {book.readingLevel}
-        </Typography>
+        <IconButton size="small" sx={{ marginLeft: 'auto' }}>
+          <AddCircleOutline />
+        </IconButton>
       </CardContent>
     </CardActionArea>
-    <CardActions>
-      <Button size="small" color="primary" onClick={() => onAdd(book)}>
-        Add to Reading List
-      </Button>
-    </CardActions>
   </Card>
 );
 
+// BookCard component for displaying books
+const BookCard = ({ book, handleAddToReadingList }: { book: Book, handleAddToReadingList: (book: Book) => void }) => (
+  <Card sx={{ maxWidth: 220, margin: '10px auto', backgroundColor: '#CFFAFA' }}>
+    <CardActionArea>
+      <img src={book.coverPhotoURL} alt={book.title} style={{
+ width: '100%' }} />
+ <CardContent>
+   <Typography gutterBottom variant="subtitle1" component="h2" sx={{ color: '#335C6E' }}>
+     {book.title}
+   </Typography>
+   <Typography variant="caption" color="textSecondary" component="p" sx={{ color: '#4AA088' }}>
+     Author: {book.author}
+   </Typography>
+   <IconButton onClick={() => handleAddToReadingList(book)} size="small" sx={{ marginLeft: 'auto', color: '#FABD33' }}>
+     <AddCircleOutline />
+   </IconButton>
+ </CardContent>
+</CardActionArea>
+</Card>
+);
+
 export default Books;
+
