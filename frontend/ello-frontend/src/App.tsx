@@ -14,7 +14,9 @@ const theme = createTheme({
 
 function App() {
   const client = new ApolloClient({
-    uri: "http://localhost:4000",
+    // uri: "http://localhost:4000",
+    uri: "https://fullstack-take-home-test-ello-backend.onrender.com",
+    
     cache: new InMemoryCache()
   });
 
