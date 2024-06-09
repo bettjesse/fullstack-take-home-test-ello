@@ -1,12 +1,11 @@
 
-
-
-import { gql, useQuery } from '@apollo/client';
 import { useState, useRef, useEffect } from 'react';
-import { TextField, Box, Typography, Grid, Container, IconButton, Card, CardActionArea, CardContent, Skeleton } from '@mui/material';
-import { AddCircleOutline } from '@mui/icons-material';
-import { useAppDispatch } from '../hooks/useAppDispatch';
+import { TextField, Box, Typography, Grid, Container, IconButton, Card, CardActionArea, CardContent, Skeleton, Badge, AppBar, Toolbar } from '@mui/material';
+import { AddCircleOutline, MenuBook } from '@mui/icons-material';
+import { useAppDispatch, useAppSelector } from '../hooks/useAppDispatch';
 import { addBook } from './slices/readingList';
+import { CssBaseline, GlobalStyles } from '@mui/material';
+import { gql, useQuery } from '@apollo/client';
 
 // Define the Books query
 const BOOKS_QUERY = gql`
@@ -39,6 +38,7 @@ const Books = () => {
   const [filteredBooks, setFilteredBooks] = useState<Book[]>([]);
   const [randomBooks, setRandomBooks] = useState<Book[]>([]);
   const dispatch = useAppDispatch();
+  const readingListCount = useAppSelector(state => state.readingList.books.length);
   const searchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -75,89 +75,96 @@ const Books = () => {
   if (error) return <p>Error :(</p>;
 
   return (
-    <Container sx={{ textAlign: 'center', marginTop: '50px', width: '80%', margin: 'auto', fontFamily: 'Mulish, sans-serif', backgroundColor: '#FFFFFF' }}>
-      <h2 style={{ color: '#335C6E' }}>Books List</h2>
-
-    
-      <Box sx={{ marginBottom: '20px' }}>
-      <TextField
-  label="Search Books"
-  variant="outlined"
-  margin="normal"
-  value={searchTerm}
-  onChange={e => handleSearch(e.target.value)}
-  sx={{ 
-    width: { xs: '100%', sm: '320px' },
-    borderRadius: '6px' // Adjust the value for smoother corners
-  }}
-/>
-
-
-
-        {searchTerm && (
-          <Box
-            ref={searchRef}
-            sx={{
-              maxHeight: '300px',
-              width: { xs: '100%', sm: '320px' },
-              overflowY: 'auto',
-              zIndex: 1,
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              textAlign: 'left',
-              margin: '0 auto',
-              position: 'relative',
-              marginTop: '10px',
-              backgroundColor: '#CFFAFA'
-            }}
-          >
-            {loading ? (
-              // Display skeletons while loading
-              Array.from(new Array(3)).map((_, index) => (
-                <Box key={index} sx={{ marginBottom: '10px', display: 'flex', alignItems: 'center', padding: '10px' }}>
-                  <Skeleton variant="rectangular" width={80} height={80} animation="pulse" style={{ marginRight: '10px' }} />
-                  <div>
-                    <Typography variant="subtitle1"><Skeleton variant="text" animation="pulse" /></Typography>
-                    <Typography variant="caption"><Skeleton variant="text" animation="pulse" /></Typography>
-                  </div>
-                  <IconButton size="small" sx={{ marginLeft: 'auto' }}>
-                    <AddCircleOutline />
-                  </IconButton>
-                </Box>
-              ))
-            ) : (
-              filteredBooks.map((book, index) => (
-                <Box key={index} sx={{ marginBottom: '10px', display: 'flex', alignItems: 'center', padding: '10px' }}>
-                  <img src={book.coverPhotoURL} alt={book.title} width={80} height={80} style={{ marginRight: '10px' }} />
-                  <div>
-                    <Typography variant="subtitle1">{book.title}</Typography>
-                    <Typography variant="caption">Author: {book.author}</Typography>
-                  </div>
-                  <IconButton size="small" sx={{ marginLeft: 'auto', color:'#FABD33' }} onClick={() => handleAddToReadingList(book)}>
-                    <AddCircleOutline />
-                  </IconButton>
-                </Box>
-              ))
-            )}
-          </Box>
-        )}
-      </Box>
-      <Grid container spacing={1} justifyContent="center">
-        {loading ? (
-          Array.from(new Array(9)).map((_, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
-              <SkeletonCard />
-            </Grid>
-          ))
-        ) : (
-          randomBooks.map((book, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
-              <BookCard book={book} handleAddToReadingList={handleAddToReadingList} />
-            </Grid>
-          ))
-        )}
-      </Grid>
-    </Container>
+    <>
+      <CssBaseline />
+      <GlobalStyles styles={{ body: { backgroundColor: '#FFFFF' } }} />
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            Books List
+          </Typography>
+          <IconButton color="inherit">
+            <Badge badgeContent={readingListCount} color="secondary">
+              <MenuBook />
+            </Badge>
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+      <Container sx={{ textAlign: 'center', marginTop: '50px', width: '80%', margin: 'auto', fontFamily: 'Mulish, sans-serif' }}>
+        <Box sx={{ marginBottom: '20px', position: 'relative', display: 'inline-block' }}>
+          <TextField
+            label="Search Books"
+            variant="outlined"
+            margin="normal"
+            value={searchTerm}
+            onChange={e => handleSearch(e.target.value)}
+            sx={{ width: { xs: '100%', sm: '320px' }, borderRadius: '6px' }}
+          />
+          {searchTerm && (
+            <Box
+              ref={searchRef}
+              sx={{
+                maxHeight: '300px',
+                width: { xs: '100%', sm: '320px' },
+                overflowY: 'auto',
+                zIndex: 1,
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+                textAlign: 'left',
+                margin: '0 auto',
+                position: 'absolute',
+                top: '100%', 
+                left: 0,
+                backgroundColor: '#CFFAFA'
+              }}
+            >
+              {loading ? (
+                Array.from(new Array(3)).map((_, index) => (
+                  <Box key={index} sx={{ marginBottom: '10px', display: 'flex', alignItems: 'center', padding: '10px' }}>
+                    <Skeleton variant="rectangular" width={80} height={80} animation="pulse" style={{ marginRight: '10px' }} />
+                    <div>
+                      <Typography variant="subtitle1"><Skeleton variant="text" animation="pulse" /></Typography>
+                      <Typography variant="caption"><Skeleton variant="text" animation="pulse" /></Typography>
+                    </div>
+                    <IconButton size="small" sx={{ marginLeft: 'auto' }}>
+                      <AddCircleOutline />
+                    </IconButton>
+                  </Box>
+                ))
+              ) : (
+                filteredBooks.map((book, index) => (
+                  <Box key={index} sx={{ marginBottom: '10px', display: 'flex', alignItems: 'center', padding: '10px' }}>
+                    <img src={book.coverPhotoURL} alt={book.title} width={80} height={80} style={{ marginRight: '10px' }} />
+                    <div>
+                      <Typography variant="subtitle1">{book.title}</Typography>
+                      <Typography variant="caption">Author: {book.author}</Typography>
+                    </div>
+                    <IconButton size="small" sx={{ marginLeft: 'auto', color:'#FABD33' }} onClick={() => handleAddToReadingList(book)}>
+                      <AddCircleOutline />
+                    </IconButton>
+                  </Box>
+                ))
+              )}
+            </Box>
+          )}
+        </Box>
+        <Grid container spacing={1} justifyContent="center">
+          {loading ? (
+            Array.from(new Array(9)).map((_, index) => (
+              <Grid item xs={12} sm={6} md={4} key={index}>
+                <SkeletonCard />
+              </Grid>
+            ))
+          ) : (
+            randomBooks.map((book, index) => (
+              <Grid item xs={12} sm={6} md={4} key={index}>
+                <BookCard book={book} handleAddToReadingList={handleAddToReadingList} />
+              </Grid>
+            ))
+          )}
+        </Grid>
+      </Container>
+    </>
   );
 };
 
@@ -185,22 +192,20 @@ const SkeletonCard = () => (
 const BookCard = ({ book, handleAddToReadingList }: { book: Book, handleAddToReadingList: (book: Book) => void }) => (
   <Card sx={{ maxWidth: 220, margin: '10px auto', backgroundColor: '#CFFAFA' }}>
     <CardActionArea>
-      <img src={book.coverPhotoURL} alt={book.title} style={{
- width: '100%' }} />
- <CardContent>
-   <Typography gutterBottom variant="subtitle1" component="h2" sx={{ color: '#335C6E' }}>
-     {book.title}
-   </Typography>
-   <Typography variant="caption" color="textSecondary" component="p" sx={{ color: '#4AA088' }}>
-     Author: {book.author}
-   </Typography>
-   <IconButton onClick={() => handleAddToReadingList(book)} size="small" sx={{ marginLeft: 'auto', color: '#FABD33' }}>
-     <AddCircleOutline />
-   </IconButton>
- </CardContent>
-</CardActionArea>
-</Card>
+      <img src={book.coverPhotoURL} alt={book.title} style={{ width: '100%' }} />
+      <CardContent>
+        <Typography gutterBottom variant="subtitle1" component="h2" sx={{ color: '#335C6E' }}>
+          {book.title}
+        </Typography>
+        <Typography variant="caption" color="textSecondary" component="p" sx={{ color: '#4AA088' }}>
+          Author: {book.author}
+        </Typography>
+        <IconButton onClick={() => handleAddToReadingList(book)} size="small" sx={{ marginLeft: 'auto', color: '#FABD33' }}>
+          <AddCircleOutline />
+        </IconButton>
+      </CardContent>
+    </CardActionArea>
+  </Card>
 );
 
 export default Books;
-
