@@ -5,7 +5,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Books from "./components/Book";
 import { Providers } from "./Provider";
 
-// Define your theme with Mulish font
+
 const theme = createTheme({
   typography: {
     fontFamily: 'Mulish, sans-serif',
