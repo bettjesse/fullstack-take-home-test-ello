@@ -25,7 +25,7 @@ const BOOKS_QUERY = gql`
 `;
 
 interface Book {
-  id: string
+
   author: string;
   coverPhotoURL: string;
   readingLevel: string;
