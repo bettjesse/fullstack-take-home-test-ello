@@ -145,14 +145,32 @@ console.log(data)
 
       <Container sx={{ textAlign: 'center', marginTop: '50px', width: '80%', margin: 'auto', fontFamily: 'Mulish, sans-serif' }}>
         <Box sx={{ marginBottom: '20px', position: 'relative', display: 'inline-block' }}>
-          <TextField
-            label="Search Books"
-            variant="outlined"
-            margin="normal"
-            value={searchTerm}
-            onChange={e => handleSearch(e.target.value)}
-            sx={{ width: { xs: '100%', sm: '320px' }, borderRadius: '6px' }}
-          />
+        <TextField
+  label="Search Books"
+  variant="outlined"
+  margin="normal"
+  value={searchTerm}
+  onChange={e => handleSearch(e.target.value)}
+  sx={{
+    width: { xs: '100%', sm: '320px' },
+    borderRadius: '6px',
+    '& .MuiOutlinedInput-root': {
+     
+     
+      '&.Mui-focused fieldset': {
+        borderColor: '#335C6E', 
+      },
+     
+    },
+    '& .MuiInputLabel-root': {
+      color: '#4AA088', // Label color
+    },
+    '& .MuiInputLabel-root.Mui-focused': {
+      color: '#28B8B8', // Label color when focused
+    },
+  }}
+/>
+
           {searchTerm && (
             <Box
               ref={searchRef}
