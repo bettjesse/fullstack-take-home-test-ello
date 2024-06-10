@@ -116,14 +116,15 @@ console.log(data)
       </AppBar>
       <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
   <List>
-    <ListItem>
-      <Typography variant="h6" sx={{ color: '#5ACCCC' }}>Student Reading List</Typography>
-    </ListItem>
-    <ListItem>
+  <ListItem>
       <IconButton onClick={() => setDrawerOpen(false)}>
         <CloseIcon />
       </IconButton>
     </ListItem>
+    <ListItem>
+      <Typography variant="h6" sx={{ color: '#5ACCCC' }}>Student Reading List</Typography>
+    </ListItem>
+    
     {readingList.map((book:Book, index: number) => (
       <ListItem key={index}>
         <ListItemText 
