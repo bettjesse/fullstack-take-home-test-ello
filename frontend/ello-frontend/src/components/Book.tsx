@@ -8,6 +8,7 @@ import { CssBaseline, GlobalStyles } from '@mui/material';
 import { gql, useQuery } from '@apollo/client';
 import { Close as CloseIcon } from '@mui/icons-material';
 import { RemoveCircleOutline as RemoveCircleOutlineIcon } from '@mui/icons-material';
+import { RootState } from '../store';
 
 
 
@@ -24,6 +25,7 @@ const BOOKS_QUERY = gql`
 `;
 
 interface Book {
+  id: string
   author: string;
   coverPhotoURL: string;
   readingLevel: string;
@@ -42,7 +44,7 @@ const Books = () => {
   const [filteredBooks, setFilteredBooks] = useState<Book[]>([]);
   const [randomBooks, setRandomBooks] = useState<Book[]>([]);
   const dispatch = useAppDispatch();
-  const readingListCount = useAppSelector(state => state.readingList.books.length);
+  const readingListCount = useAppSelector((state :RootState) => state.readingList.books.length);
   const readingList = useAppSelector(state => state.readingList.books);
   const searchRef = useRef<HTMLDivElement>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -73,7 +75,7 @@ const Books = () => {
       setFilteredBooks(filtered);
     }
   };
-
+console.log(data)
   const handleAddToReadingList = (book: Book) => {
     dispatch(addBook(book));
   };
@@ -89,15 +91,27 @@ const Books = () => {
       <CssBaseline />
       <GlobalStyles styles={{ body: { backgroundColor: '#FFFFF' } }} />
       <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1, color:"#FABD33" }}>
+      <Toolbar sx={{ backgroundColor: '#28B8B8' }}>
+          <Typography variant="h6" sx={{ flexGrow: 1, color:"#FFFFF",'&:hover': {
+      color: '#CCFAFA', 
+    },
+    transition: 'color 0.3s ease', }}>
             Books List
           </Typography>
           <IconButton color="inherit" onClick={() => setDrawerOpen(true)}>
-            <Badge badgeContent={readingListCount} color="secondary">
-              <MenuBook />
-            </Badge>
-          </IconButton>
+  <Badge
+    badgeContent={readingListCount}
+    sx={{
+      '& .MuiBadge-badge': {
+        backgroundColor: '#FABD33',
+        color: '#000', 
+      },
+    }}
+  >
+    <MenuBook />
+  </Badge>
+</IconButton>
+
         </Toolbar>
       </AppBar>
       <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
@@ -110,7 +124,7 @@ const Books = () => {
         <CloseIcon />
       </IconButton>
     </ListItem>
-    {readingList.map((book, index) => (
+    {readingList.map((book:Book, index: number) => (
       <ListItem key={index}>
         <ListItemText 
           primary={
