@@ -114,6 +114,7 @@ interface ReadingListState {
 ```
 
 ## Book Interface
+Defines the structure of a Book object:
 ```typescript
 interface Book {
   author: string;
@@ -124,6 +125,7 @@ interface Book {
 ```
 
 ## Initial state
+The initial state of the reading list slice:
 ```typescript
 const initialState: ReadingListState = {
   books: [],
@@ -133,6 +135,8 @@ const initialState: ReadingListState = {
 ```
 
 ## addBook Reducer
+
+Adds a book to the reading list if it doesn't already exist:
 ```typescript
 addBook(state, action: PayloadAction<Book>) {
   const { title } = action.payload;
@@ -148,6 +152,9 @@ addBook(state, action: PayloadAction<Book>) {
 ```
 
 ## removeBook Reducer
+
+Removes a book from the reading list based on its title
+
 ```typescript
 removeBook(state, action: PayloadAction<string>) {
   state.books = state.books.filter(book => book.title !== action.payload);
