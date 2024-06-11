@@ -34,7 +34,7 @@ git clone https://github.com/bettjesse/fullstack-take-home-test-ello
  cd frontend
 ```
 ```shell
- cd  ellofrontend
+ cd  ello-frontend
 ```
 ```shell
  npm install
@@ -55,7 +55,7 @@ git clone https://github.com/bettjesse/fullstack-take-home-test-ello
  npm start
 ```
 
-#React Hooks Usage
+# React Hooks Usage
 
 The application utilizes various React hooks for state management and component lifecycle handling:
 
@@ -64,7 +64,7 @@ The application utilizes various React hooks for state management and component 
 3. useEffect: Employed for handling side effects such as fetching data, subscribing to document events, and cleaning up event listeners.
 4. Custom Redux Hooks (useAppDispatch and useAppSelector): These custom hooks provided by Redux Toolkit are used to interact with the Redux store, dispatching actions, and selecting state slices from the store
 
- #Libraries and Components
+ # Libraries and Components
 The application utilizes various libraries and components, including:
 
 1. Material-UI: Material-UI components are used for building the user interface, providing a rich set of pre-designed components and styles for faster and consistent UI development.
@@ -101,6 +101,57 @@ const getRandomBooks = (books: Book[], num: number): Book[] => {
   return shuffled.slice(0, num);
 };
 
+```
+
+## ReadingList Slice
+The readingList slice manages the state of a user's reading list, allowing them to add and remove books. It is implemented using Redux Toolkit's createSlice function.
+
+The ReadingListState interface defines the structure of the reading list state:
+```typescript
+interface ReadingListState {
+  books: Book[];
+}
+```
+
+## Book Interface
+```typescript
+interface Book {
+  author: string;
+  title: string;
+  readingLevel: string;
+  coverPhotoURL: string;
+}
+```
+
+## Initial state
+```typescript
+const initialState: ReadingListState = {
+  books: [],
+};
+
+
+```
+
+## addBook Reducer
+```typescript
+addBook(state, action: PayloadAction<Book>) {
+  const { title } = action.payload;
+  // Check if the book with the same title already exists
+  const existingBook = state.books.find(book => book.title === title);
+  // If the book doesn't exist, add it to the list
+  if (!existingBook) {
+    state.books.push(action.payload);
+  }
+}
+
+
+```
+
+## removeBook Reducer
+```typescript
+removeBook(state, action: PayloadAction<string>) {
+  state.books = state.books.filter(book => book.title !== action.payload);
+}
 ```
 
 # SkeletonCard Component
