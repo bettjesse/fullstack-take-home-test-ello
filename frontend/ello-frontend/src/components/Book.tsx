@@ -459,23 +459,36 @@ const Books = () => {
             }}
           />
           {searchTerm && (
-            <Box
-              ref={searchRef}
-              sx={{
-                maxHeight: '300px',
-                width: { xs: '100%', sm: '320px' },
-                overflowY: 'auto',
-                zIndex: 1,
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                textAlign: 'left',
-                margin: '0 auto',
-                position: 'absolute',
-                top: '100%',
-                left: 0,
-                backgroundColor: '#CFFAFA'
-              }}
-            >
+          <Box
+          ref={searchRef}
+          sx={{
+            maxHeight: '300px',
+            width: { xs: '100%', sm: '320px' },
+            overflowY: 'auto',
+            zIndex: 1,
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+            textAlign: 'left',
+            margin: '0 auto',
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            backgroundColor: '#CFFAFA',
+            '&::-webkit-scrollbar': {
+              width: '6px',
+            },
+            '&::-webkit-scrollbar-track': {
+              background: '#f1f1f1',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              background: '#888',
+              borderRadius: '10px',
+            },
+            '&::-webkit-scrollbar-thumb:hover': {
+              background: '#555',
+            },
+          }}
+        >
               {loading ? (
                 Array.from(new Array(3)).map((_, index) => (
                   <Box key={index} sx={{ marginBottom: '10px', display: 'flex', alignItems: 'center', padding: '10px' }}>
@@ -492,25 +505,19 @@ const Books = () => {
               ) : (
                 filteredBooks.map((book, index) => (
                   <Box key={index} sx={{ marginBottom: '10px', display: 'flex', alignItems: 'center', padding: '10px' }}>
-                    <img src={book.coverPhotoURL} alt={book.title} width={80} height={80} style={{ marginRight: '10px' }} />
-                    <div>
-                      <Typography variant="subtitle1">{book.title}</Typography>
-                      <Typography variant="caption">Author: {book.author}</Typography>
-                    </div>
-                    <IconButton size="small" sx={{ marginLeft: 'auto', color: isBookInReadingList(book) ? '#4AA088' : '#FABD33' }} onClick={() => handleAddToReadingList(book)}>
-                      {isBookInReadingList(book) ? (
-                        <>
-                          <CheckCircleOutline />
-                          <Typography variant="caption" sx={{ marginLeft: '4px', color: '#4AA088' }}>Added</Typography>
-                        </>
-                      ) : (
-                        <>
-                          <AddCircleOutline />
-                          <Typography variant="caption" sx={{ marginLeft: '4px', color: '#FABD33' }}>Add</Typography>
-                        </>
-                      )}
-                    </IconButton>
-                  </Box>
+                  <img src={book.coverPhotoURL} alt={book.title} width={80} height={80} style={{ marginRight: '10px' }} />
+                  <div>
+                    <Typography variant="subtitle1" sx={{ fontSize: '0.9rem' }}>{book.title}</Typography>
+                    <Typography variant="caption">Author: {book.author}</Typography>
+                  </div>
+                  <IconButton size="small" onClick={() => handleAddToReadingList(book)} disabled={isBookInReadingList(book)} sx={{ marginLeft: 'auto' }}>
+                    {isBookInReadingList(book) ? (
+                      <CheckCircleOutline sx={{ color: '#335C6E' }} />
+                    ) : (
+                      <AddCircleOutline sx={{ color: '#FABD33' }} />
+                    )}
+                  </IconButton>
+                </Box>
                 ))
               )}
             </Box>
@@ -580,7 +587,7 @@ const BookCard = ({ book, handleAddToReadingList, isBookInReadingList }: { book:
       {isBookInReadingList ? (
         <>
           <CheckCircleOutline />
-          <Typography variant="caption" sx={{ marginLeft: '4px', color: '#4AA088' }}>Added</Typography>
+          <Typography variant="caption" sx={{ marginLeft: '4px', color: '#335C6E' }}></Typography>
         </>
       ) : (
         <>
