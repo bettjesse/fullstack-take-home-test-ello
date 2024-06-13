@@ -20,8 +20,9 @@ This application fetches and displays a list of books. It initially shows 9 rand
 5. Redux for State Management: Redux is employed for state management, providing a predictable and centralized way to manage application state. The reading list state, including added and removed books, is stored and managed using Redux.
 
 6. Close Search Result by Clicking Anywhere Outside: Enhancing user interaction, the application allows users to close the search results by clicking anywhere outside the search input or the search results, providing a seamless browsing experience.
-
-
+   
+# Deployment note
+Please note that the live demo of this project is hosted on a free tier Render server. Due to the limitations of this hosting plan, you might experience some slowness when accessing the application. If you encounter any performance issues, you can follow the instructions below to set up and run the project locally for a smoother experience
 
 
 ### Clone the Repository:
