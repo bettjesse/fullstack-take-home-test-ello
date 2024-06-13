@@ -1,4 +1,4 @@
-# book assignment view
+# Book assignment view
 
 This application fetches and displays a list of books. It initially shows 9 random books, with more books fetched based on user search. It includes features like a reading list, skeleton loaders during data fetch, mobile responsiveness, and notifications for adding books to the reading list. The application uses TypeScript for type safety and React with Material UI, integrating Apollo Client to manage GraphQL queries with a GraphQL server.
 
