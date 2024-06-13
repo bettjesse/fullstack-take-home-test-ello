@@ -1,12 +1,15 @@
 
 import { useState, useRef, useEffect } from 'react';
-import { TextField, Box, Typography, Grid, Container, IconButton, Card, CardActionArea, CardContent, Skeleton, Badge, AppBar, Toolbar, Drawer, List, ListItem, ListItemText, Snackbar } from '@mui/material';
+import SkeletonCard from './SkeletonCard';
+import BookCard from './BookCard';
+import { TextField, Box, Typography, Grid, Container, IconButton, Skeleton, Badge, AppBar, Toolbar, Drawer, List, ListItem, ListItemText, Snackbar } from '@mui/material';
 import { AddCircleOutline, MenuBook, CheckCircleOutline, Close as CloseIcon, RemoveCircleOutline as RemoveCircleOutlineIcon } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../hooks/useAppDispatch';
 import { addBook, removeBook } from '../slices/readingList';
 import { CssBaseline, GlobalStyles } from '@mui/material';
 import { gql, useQuery } from '@apollo/client';
 import { RootState } from '../store';
+
 
 // Define the Books query
 const BOOKS_QUERY = gql`
@@ -191,7 +194,7 @@ const Books = () => {
             },
             '&::-webkit-scrollbar-thumb': {
               background: '#888',
-              borderRadius: '10px',
+              
             },
             '&::-webkit-scrollbar-thumb:hover': {
               background: '#555',
@@ -258,54 +261,8 @@ const Books = () => {
   );
 };
 
-// SkeletonCard component for displaying skeletons
-const SkeletonCard = () => (
-  <Card sx={{ maxWidth: 220, margin: '10px auto' }}>
-    <CardActionArea>
-      <Skeleton variant="rectangular" width={220} height={320} animation="pulse" />
-      <CardContent>
-        <Typography gutterBottom variant="subtitle1" component="h2">
-          <Skeleton variant="text" animation="pulse" />
-        </Typography>
-        <Typography variant="caption" color="textSecondary" component="p">
-          <Skeleton variant="text" animation="pulse" />
-        </Typography>
-        <IconButton size="small" sx={{ marginLeft: 'auto' }}>
-          <AddCircleOutline />
-        </IconButton>
-      </CardContent>
-    </CardActionArea>
-  </Card>
-);
 
-// BookCard component for displaying books
-const BookCard = ({ book, handleAddToReadingList, isBookInReadingList }: { book: Book, handleAddToReadingList: (book: Book) => void, isBookInReadingList: boolean }) => (
-  <Card sx={{ maxWidth: 220, margin: '10px auto', backgroundColor: '#CFFAFA', display: 'flex', flexDirection: 'column' }}>
-    <CardActionArea style={{ flexGrow: 1 }}>
-      <img src={book.coverPhotoURL} alt={book.title} style={{ width: '100%' }} />
-      <CardContent style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-        <Typography gutterBottom variant="subtitle1" component="h2" sx={{ color: '#335C6E', flex: '1' }}>
-          {book.title}
-        </Typography>
-        <Typography variant="caption" color="textSecondary" component="p" sx={{ color: '#4AA088' }}>
-          Author: {book.author}
-        </Typography>
-      </CardContent>
-    </CardActionArea>
-    <IconButton size="small" sx={{ marginLeft: 'auto', color: isBookInReadingList ? '#4AA088' : '#FABD33' }} onClick={() => handleAddToReadingList(book)}>
-      {isBookInReadingList ? (
-        <>
-          <CheckCircleOutline />
-          <Typography variant="caption" sx={{ marginLeft: '4px', color: '#335C6E' }}></Typography>
-        </>
-      ) : (
-        <>
-          <AddCircleOutline />
-          <Typography variant="caption" sx={{ marginLeft: '4px', color: '#FABD33' }}>Add</Typography>
-        </>
-      )}
-    </IconButton>
-  </Card>
-);
+
+
 
 export default Books;
