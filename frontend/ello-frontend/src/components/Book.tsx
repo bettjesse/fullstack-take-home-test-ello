@@ -2,13 +2,15 @@
 import { useState, useRef, useEffect } from 'react';
 import SkeletonCard from './SkeletonCard';
 import BookCard from './BookCard';
-import { TextField, Box, Typography, Grid, Container, IconButton, Skeleton, Badge, AppBar, Toolbar, Drawer, List, ListItem, ListItemText, Snackbar } from '@mui/material';
-import { AddCircleOutline, MenuBook, CheckCircleOutline, Close as CloseIcon, RemoveCircleOutline as RemoveCircleOutlineIcon } from '@mui/icons-material';
+import { TextField, Box, Typography, Grid, Container, IconButton, Skeleton, Badge, AppBar, Toolbar,  Snackbar } from '@mui/material';
+import ReadingListDrawer from './ReadingListDrawer';
+import { AddCircleOutline, MenuBook, CheckCircleOutline,  } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../hooks/useAppDispatch';
 import { addBook, removeBook } from '../slices/readingList';
 import { CssBaseline, GlobalStyles } from '@mui/material';
 import { gql, useQuery } from '@apollo/client';
 import { RootState } from '../store';
+
 
 
 // Define the Books query
@@ -23,7 +25,7 @@ const BOOKS_QUERY = gql`
   }
 `;
 
-interface Book {
+export interface Book {
   author: string;
   coverPhotoURL: string;
   readingLevel: string;
@@ -118,34 +120,12 @@ const Books = () => {
           </IconButton>
         </Toolbar>
       </AppBar>
-      <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <List>
-          <ListItem>
-            <IconButton onClick={() => setDrawerOpen(false)}>
-              <CloseIcon />
-            </IconButton>
-          </ListItem>
-          <ListItem>
-            <Typography variant="h6" sx={{ color: '#5ACCCC' }}>Student Reading List</Typography>
-          </ListItem>
-          {readingList.map((book: Book, index: number) => (
-            <ListItem key={index}>
-              <ListItemText
-                primary={
-                  <Typography variant="subtitle1" sx={{ color: '#FACCC', marginRight: '10px' }}>{index + 1}. {book.title}</Typography>
-                }
-                secondary={
-                  <Typography variant="caption" sx={{ color: '#28B8B8' }}>Author: <span style={{ color: '#53C2C2' }}>{book.author}</span></Typography>
-                }
-              />
-              <IconButton onClick={() => handleRemoveFromReadingList(book.title)} size="small">
-                <RemoveCircleOutlineIcon sx={{ color: '#FABD33' }} />
-              </IconButton>
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
-
+      <ReadingListDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        readingList={readingList}
+        handleRemoveFromReadingList={handleRemoveFromReadingList}
+      />
       <Container sx={{ textAlign: 'center', marginTop: '50px', width: '80%', margin: 'auto', fontFamily: 'Mulish, sans-serif' }}>
         <Box sx={{ marginBottom: '20px', position: 'relative', display: 'inline-block' }}>
           <TextField
