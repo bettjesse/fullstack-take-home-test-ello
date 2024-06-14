@@ -20,6 +20,12 @@ This application fetches and displays a list of books. It initially shows 9 rand
 5. Redux for State Management: Redux is employed for state management, providing a predictable and centralized way to manage application state. The reading list state, including added and removed books, is stored and managed using Redux.
 
 6. Close Search Result by Clicking Anywhere Outside: Enhancing user interaction, the application allows users to close the search results by clicking anywhere outside the search input or the search results, providing a seamless browsing experience.
+
+7. Load More Pagination: Users can load more books by clicking a "Load More" button, which fetches additional books and adds them to the displayed list.
+
+8. Teacher Favorites: Displays a set of favorite books for teachers, showcasing a curated list of books that are popular or recommended for educators.
+
+9. Reading List: A feature that allows teachers to add books to a reading list, view the list of added books, and remove books from the list. This helps teachers manage the books they plan to share with their students effectively.
    
 # Deployment note
 Please note that the live demo of this project is hosted on a free tier Render server. Due to the limitations of this hosting plan, you might experience some slowness when accessing the application. If you encounter any performance issues, you can follow the instructions below to set up and run the project locally for a smoother experience
@@ -80,6 +86,7 @@ The application utilizes various libraries and components, including:
 2. BookCard: This component displays 9 books fetched randomly, showcasing their details such as title, author, and cover photo.
 3. SkeletonCard: A component used to display placeholders while data is being fetched, providing a better user experience during loading times.
 4. ReadingListDrawer: A component that displays the books added to the reading list. It includes functionality for removing books from the list and provides a drawer UI element for easy access.
+5. TeacherFavorites: A component that displays a set of favorite books for teachers, showcasing a curated list of books that are popular or recommended for educators.
   
 
 # Books Query
