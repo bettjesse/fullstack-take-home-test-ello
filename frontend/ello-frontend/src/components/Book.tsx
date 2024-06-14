@@ -115,8 +115,15 @@ const Books = () => {
       <CssBaseline />
       <GlobalStyles styles={{ body: { backgroundColor: '#FFFFF' } }} />
       <AppBar position="static">
-        <Toolbar sx={{ backgroundColor: '#28B8B8' }}>
-          <Typography variant="h6" sx={{ flexGrow: 1, color: "#FFFFF", '&:hover': { color: '#CCFAFA' }, transition: 'color 0.3s ease', }}>
+        <Toolbar sx={{ backgroundColor: '#FFFF' }}>
+        <Box
+            component="img"
+            sx={{ height: 40 }}
+            alt="Ello Logo"
+            src="assets/logo.svg"
+            
+          />
+          <Typography variant="h6" sx={{ flexGrow: 1, color: "#FFFFF", '&:hover': { color: '#FFFFF' }, transition: 'color 0.3s ease', }}>
             Books List
           </Typography>
           <IconButton color="inherit" onClick={() => setDrawerOpen(true)}>
@@ -129,7 +136,7 @@ const Books = () => {
                 },
               }}
             >
-              <MenuBook />
+              <MenuBook sx={{ color: '#28B8B8' }} />
             </Badge>
           </IconButton>
         </Toolbar>
@@ -293,3 +300,4 @@ const Books = () => {
 };
 
 export default Books;
+
