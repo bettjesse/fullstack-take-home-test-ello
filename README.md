@@ -1,4 +1,4 @@
-# book assignment view
+# Book assignment view
 
 This application fetches and displays a list of books. It initially shows 9 random books, with more books fetched based on user search. It includes features like a reading list, skeleton loaders during data fetch, mobile responsiveness, and notifications for adding books to the reading list. The application uses TypeScript for type safety and React with Material UI, integrating Apollo Client to manage GraphQL queries with a GraphQL server.
 
@@ -73,7 +73,13 @@ The application utilizes various libraries and components, including:
 3. @reduxjs/toolkit: Redux Toolkit is employed for efficient Redux state management, offering utilities like createSlice for defining reducers and actions.
 4. Snackbar: Material-UI Snackbar component is used for displaying notifications to users, providing unobtrusive feedback on actions such as adding a book to the reading list.
 6. GlobalStyles and CssBaseline: Material-UI's GlobalStyles and CssBaseline components are used for global styling and ensuring consistent baseline styles across different browsers  and devices.
-7. Book. Main component where data fetching happens.
+
+## Additionally, the application includes the following custom components:
+
+1. Books: The main component where data fetching happens. It serves as the primary view and includes other components to display and manage books.
+2. BookCard: This component displays 9 books fetched randomly, showcasing their details such as title, author, and cover photo.
+3. SkeletonCard: A component used to display placeholders while data is being fetched, providing a better user experience during loading times.
+4. ReadingListDrawer: A component that displays the books added to the reading list. It includes functionality for removing books from the list and provides a drawer UI element for easy access.
   
 
 # Books Query
@@ -161,7 +167,56 @@ removeBook(state, action: PayloadAction<string>) {
   state.books = state.books.filter(book => book.title !== action.payload);
 }
 ```
+## ReadingList Components
+Shows books added to the reading list with buttons to remove books from the reading lst
+```typescript
 
+import { Drawer, List, ListItem, ListItemText, Typography, IconButton } from '@mui/material';
+import { Close as CloseIcon, RemoveCircleOutline as RemoveCircleOutlineIcon } from '@mui/icons-material';
+import { Book } from './Book';
+
+interface ReadingListDrawerProps {
+  open: boolean;
+  onClose: () => void;
+  readingList: Book[];
+  handleRemoveFromReadingList: (title: string) => void;
+}
+
+const ReadingListDrawer = ({ open, onClose, readingList, handleRemoveFromReadingList }: ReadingListDrawerProps) => {
+  return (
+    <Drawer anchor="right" open={open} onClose={onClose}>
+      <List>
+        <ListItem>
+          <IconButton onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        </ListItem>
+        <ListItem>
+          <Typography variant="h6" sx={{ color: '#5ACCCC' }}>Student Reading List</Typography>
+        </ListItem>
+        {readingList.map((book, index) => (
+          <ListItem key={index}>
+            <ListItemText
+              primary={
+                <Typography variant="subtitle1" sx={{ color: '#FACCC', marginRight: '10px' }}>{index + 1}. {book.title}</Typography>
+              }
+              secondary={
+                <Typography variant="caption" sx={{ color: '#28B8B8' }}>Author: <span style={{ color: '#53C2C2' }}>{book.author}</span></Typography>
+              }
+            />
+            <IconButton onClick={() => handleRemoveFromReadingList(book.title)} size="small">
+              <RemoveCircleOutlineIcon sx={{ color: '#FABD33' }} />
+            </IconButton>
+          </ListItem>
+        ))}
+      </List>
+    </Drawer>
+  );
+};
+
+export default ReadingListDrawer;
+
+```
 # SkeletonCard Component
 Displays a skeleton loading card during data fetching.
 
