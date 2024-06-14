@@ -248,7 +248,7 @@ const Books = () => {
         
 <Grid container spacing={3} justifyContent="center">
   {loading ? (
-    Array.from(new Array(6)).map((_, index) => (
+    Array.from(new Array(8)).map((_, index) => (
       <Grid item xs={12} sm={6} md={3} key={index} style={{ display: 'flex' }}>
         <SkeletonCard />
       </Grid>
