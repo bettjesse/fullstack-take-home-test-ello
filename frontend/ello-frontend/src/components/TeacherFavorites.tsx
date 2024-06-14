@@ -15,7 +15,7 @@ interface TeacherFavoritesProps {
 const TeacherFavorites = ({ teacherFavorites, loading, handleAddToReadingList, isBookInReadingList }: TeacherFavoritesProps) => {
   return (
     <>
-    <Typography variant="h5" sx={{ color: '#335E6C' }} gutterBottom textAlign="left">Teacher Favorites</Typography>
+    <Typography variant="h6" sx={{ color: '#335E6C' }} gutterBottom textAlign="left">Teacher Favorites</Typography>
     <Grid container spacing={3} justifyContent="center" sx={{ marginBottom: '20px' }}>
       {loading ? (
         Array.from(new Array(4)).map((_, index) => (

@@ -264,8 +264,8 @@ const Books = () => {
     variant="contained"
     onClick={loadMoreBooks}
     sx={{
-      marginTop: '20px', // Adjust top margin as needed
-      marginBottom: '20px', // Add bottom margin
+      marginTop: '20px', 
+      marginBottom: '20px', 
       backgroundColor: '#FADB33',
       color: '#335C6E',
       '&:hover': {
