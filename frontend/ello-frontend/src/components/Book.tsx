@@ -124,7 +124,7 @@ const Books = () => {
             
           />
           <Typography variant="h6" sx={{ flexGrow: 1, color: "#FFFFF", '&:hover': { color: '#FFFFF' }, transition: 'color 0.3s ease', }}>
-            Books List
+            Book List
           </Typography>
           <IconButton color="inherit" onClick={() => setDrawerOpen(true)}>
             <Badge
