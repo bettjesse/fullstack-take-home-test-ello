@@ -10,9 +10,10 @@ interface ReadingListDrawerProps {
   handleRemoveFromReadingList: (title: string) => void;
 }
 
-const ReadingListDrawer = ({ open, onClose, readingList, handleRemoveFromReadingList }: ReadingListDrawerProps) => {
+
+const ReadingListDrawer = ({ open, onClose, readingList, handleRemoveFromReadingList }:ReadingListDrawerProps) => {
   return (
-    <Drawer anchor="right" open={open} onClose={onClose}>
+    <Drawer anchor="right" open={open} onClose={onClose} sx={{ zIndex: 1400 }}>
       <List>
         <ListItem>
           <IconButton onClick={onClose}>

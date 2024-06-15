@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import SkeletonCard from './SkeletonCard';
 import BookCard from './BookCard';
 import TeacherFavorites from './TeacherFavorites';
-import { TextField, Box, Typography, Grid, Container, IconButton, Skeleton, Badge, AppBar, Toolbar, Snackbar, Button } from '@mui/material';
+import { TextField, Box, Typography, Grid, Container, IconButton, Skeleton, Badge, AppBar, Toolbar, Snackbar, Button} from '@mui/material';
 import ReadingListDrawer from './ReadingListDrawer';
 import { AddCircleOutline, MenuBook, CheckCircleOutline } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../hooks/useAppDispatch';
@@ -114,14 +114,13 @@ const Books = () => {
     <>
       <CssBaseline />
       <GlobalStyles styles={{ body: { backgroundColor: '#FFFFF' } }} />
-      <AppBar position="static">
+      <AppBar position="fixed">
         <Toolbar sx={{ backgroundColor: '#FFFF' }}>
-        <Box
+          <Box
             component="img"
             sx={{ height: 40 }}
             alt="Ello Logo"
             src="assets/logo.svg"
-            
           />
           <Typography variant="h6" sx={{ flexGrow: 1, color: "#FFFFF", '&:hover': { color: '#FFFFF' }, transition: 'color 0.3s ease', }}>
             Book List
@@ -141,6 +140,7 @@ const Books = () => {
           </IconButton>
         </Toolbar>
       </AppBar>
+      <Toolbar /> {/* This Toolbar is for adding spacing for the fixed AppBar */}
       <ReadingListDrawer
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
@@ -300,4 +300,3 @@ const Books = () => {
 };
 
 export default Books;
-
